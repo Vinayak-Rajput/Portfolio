@@ -13,29 +13,59 @@
       --background-light: #ecf0f1;
       --background-white: #ffffff;
   }
+  [data-theme="dark"] {
+      --primary-color: #ecf0f1;
+      --secondary-color: #1abc9c;
+      --text-color: #ecf0f1;
+      --background-light: #2c3e50;
+      --background-white: #1a1a1a;
+  }
   * {margin: 0; padding: 0; box-sizing: border-box;}
-  body {font-family: 'Josefin Sans', sans-serif; line-height: 1.6; color: var(--text-color); scroll-behavior: smooth;}
+  html { scroll-behavior: smooth; }
+  body {font-family: 'Josefin Sans', sans-serif; line-height: 1.6; color: var(--text-color); background-color: var(--background-white); transition: background-color .3s ease, color .3s ease;}
+
+  /* Navbar */
   .navbar {box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.3s ease;}
   .navbar-brand {color: var(--primary-color) !important; font-weight: 700; letter-spacing: 1px;}
   .nav-link {color: var(--primary-color) !important; font-weight: 500; position: relative; transition: color 0.3s ease;}
   .nav-link::after {content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; left: 0; background-color: var(--secondary-color); transition: width 0.3s ease;}
   .nav-link:hover::after {width: 100%;}
+  .theme-toggle {cursor: pointer; border: none; background: none; font-size: 1.5rem; color: var(--primary-color);}
+
+  /* Sections + reveal animation */
+  section {opacity: 0; transform: translateY(40px); transition: opacity .8s ease-out, transform .8s ease-out;}
+  section.visible {opacity: 1; transform: translateY(0);}
+
+  /* Home */
   #home {background-color: var(--background-light); padding: 100px 0; text-align: center;}
   #home h2 {color: var(--primary-color); font-size: 2.5rem; margin-bottom: 20px;}
   #home .text-muted {max-width: 700px; margin: 0 auto 30px;}
+
+  /* Skills / Certs / Achievements */
   #skills, #certifications, #achievements {padding: 80px 0;}
   #skills h3, #certifications h3, #achievements h3 {text-align: center; margin-bottom: 30px; color: var(--secondary-color);}
   #skills ul, #certifications ul, #achievements ul {list-style-type: none; padding: 0;}
-  #skills ul li, #certifications ul li, #achievements ul li {background-color: var(--background-light); margin: 10px 0; padding: 10px 15px; border-radius: 5px; transition: transform 0.3s ease;}
+  #skills ul li, #certifications ul li, #achievements ul li {background-color: var(--background-light); margin: 10px 0; padding: 10px 15px; border-radius: 5px; transition: transform 0.3s ease, background-color .3s ease, color .3s ease;}
   #skills ul li:hover, #certifications ul li:hover, #achievements ul li:hover {transform: translateX(10px); background-color: var(--secondary-color); color: white;}
+
+  /* Projects */
   #portfolio {background-color: var(--background-light); padding: 80px 0;}
   #portfolio h3 {color: var(--primary-color); text-align: center; margin-bottom: 30px;}
   .card {transition: all 0.3s ease; border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
   .card:hover {transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,0,0,0.15);}
   .card-img-top {height: 220px; object-fit: cover;}
+
+  /* Footer */
   footer {background-color: var(--primary-color); color: white; padding: 20px 0;}
+
+  /* Buttons */
   .btn-primary {background-color: var(--secondary-color) !important; border-color: var(--secondary-color) !important; transition: all 0.3s ease;}
   .btn-primary:hover {background-color: var(--primary-color) !important; transform: translateY(-3px);}
+
+  @media (max-width: 768px) {
+    #home h2 {font-size: 2rem;}
+    .navbar-nav {text-align: center;}
+  }
 </style>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -47,7 +77,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
   <div class="container-fluid px-5">
     <a class="navbar-brand fw-bold fs-2" href="#">Portfolio</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
@@ -61,11 +91,12 @@
         <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
       </ul>
     </div>
+    <button class="theme-toggle ms-3" id="themeToggle" aria-label="Toggle theme"><i class="bi bi-moon"></i></button>
   </div>
 </nav>
 
-<!-- Home -->
-<section id="home">
+<!-- Home Section -->
+<section id="home" class="pt-5 pb-5">
   <div class="container text-center">
     <h2>Hello! I'm <span class="text-primary">Vinayak Rajput</span></h2>
     <p class="text-muted">Computer Science undergraduate (CGPA 9.03) specializing in Software Engineering, AI/ML, Cybersecurity, and Cloud. Passionate about building impactful systems and solving real-world challenges.</p>
@@ -73,76 +104,114 @@
   </div>
 </section>
 
-<!-- Skills -->
-<section id="skills">
+<!-- Skills Section -->
+<section id="skills" class="py-5">
   <div class="container">
-    <h3>My Skills</h3>
+    <h3 class="text-center">My Skills</h3>
     <div class="row mt-4">
-      <div class="col-md-3"><ul><li>Java</li><li>Python</li><li>SQL</li><li>JavaScript</li></ul></div>
-      <div class="col-md-3"><ul><li>TensorFlow, Scikit-learn</li><li>NLP, LSTM</li><li>Flask, REST APIs</li><li>OpenCV</li></ul></div>
-      <div class="col-md-3"><ul><li>Cybersecurity</li><li>Network Security</li><li>Encryption & Access Control</li><li>Vulnerability Assessment</li></ul></div>
-      <div class="col-md-3"><ul><li>AWS, GCP</li><li>CI/CD, Docker</li><li>Agile & DevOps</li><li>Git, MySQL/SQL Server</li></ul></div>
+      <div class="col-md-3">
+        <ul>
+          <li>Java</li>
+          <li>Python</li>
+          <li>SQL</li>
+          <li>JavaScript</li>
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <ul>
+          <li>TensorFlow, Scikit-learn</li>
+          <li>NLP, LSTM</li>
+          <li>Flask, REST APIs</li>
+          <li>OpenCV</li>
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <ul>
+          <li>Cybersecurity</li>
+          <li>Network Security</li>
+          <li>Encryption & Access Control</li>
+          <li>Vulnerability Assessment</li>
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <ul>
+          <li>AWS, GCP</li>
+          <li>CI/CD, Docker</li>
+          <li>Agile & DevOps</li>
+          <li>Git, MySQL/SQL Server</li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- Experience -->
-<section id="experience" class="bg-light py-5">
+<!-- Experience Section -->
+<section id="experience" class="py-5 bg-light">
   <div class="container">
     <h3 class="text-center">Work Experience</h3>
     <div class="mt-4">
-      <h5>Python Developer Intern — InternForte</h5>
-      <p><strong>Nov 2023 – Jan 2024</strong></p>
-      <ul>
-        <li>Developed Flask-based applications including Hangman Game & Password Generator using Regex.</li>
-        <li>Gained experience in backend API development and software engineering practices.</li>
-      </ul>
+      <div class="mb-4">
+        <h5>Python Developer Intern — InternForte</h5>
+        <p><strong>Nov 2023 – Jan 2024</strong></p>
+        <ul>
+          <li>Developed Flask-based applications including a Hangman Game and a Password Generator using Regex.</li>
+          <li>Strengthened backend API development and software engineering practices.</li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- Portfolio -->
-<section id="portfolio">
+<!-- Projects Section -->
+<section id="portfolio" class="py-5">
   <div class="container">
-    <h3>Projects</h3>
+    <h3 class="text-center">Projects</h3>
     <div class="row mt-4">
       <div class="col-md-6 mb-4">
-        <div class="card">
-          <img src="images/electricity.jpg" class="card-img-top" alt="Electricity Bill" />
-          <div class="card-body">
+        <div class="card h-100">
+          <img src="images/electricity.jpg" class="card-img-top" alt="Electricity Bill Management System" />
+          <div class="card-body d-flex flex-column">
             <h5 class="card-title">Electricity Bill Management System</h5>
-            <p class="card-text">Java, JDBC, Swing, MySQL | Automated billing with 40% time reduction and secure role-based access.</p>
-            <a href="https://github.com/SNEHARAJU21/ELECTRICITY_BILLING_SYSTEM" class="btn btn-outline-primary">View Project</a>
+            <p class="card-text">Java, JDBC, Swing, MySQL — Automated billing with 40% time reduction and secure role-based access.</p>
+            <div class="mt-auto">
+              <a href="https://github.com/SNEHARAJU21/ELECTRICITY_BILLING_SYSTEM" class="btn btn-outline-primary" target="_blank" rel="noopener">View Project</a>
+            </div>
           </div>
         </div>
       </div>
       <div class="col-md-6 mb-4">
-        <div class="card">
-          <img src="images/sentiment.jpg" class="card-img-top" alt="Sentiment Analysis" />
-          <div class="card-body">
+        <div class="card h-100">
+          <img src="images/sentiment.jpg" class="card-img-top" alt="Sentiment Analysis & Emotion Detection" />
+          <div class="card-body d-flex flex-column">
             <h5 class="card-title">Sentiment Analysis & Emotion Detection</h5>
-            <p class="card-text">Python, NLP, LSTM | Achieved 87% accuracy on 50k+ samples with real-time Flask API deployment.</p>
-            <a href="https://github.com/Vinayak-Rajput/Sentiment-Analysis-Emotion-Detection-NN" class="btn btn-outline-primary">View Project</a>
+            <p class="card-text">Python, NLP, LSTM — Achieved 87% accuracy on 50k+ samples with real-time Flask API deployment.</p>
+            <div class="mt-auto">
+              <a href="https://github.com/Vinayak-Rajput/Sentiment-Analysis-Emotion-Detection-NN" class="btn btn-outline-primary" target="_blank" rel="noopener">View Project</a>
+            </div>
           </div>
         </div>
       </div>
       <div class="col-md-6 mb-4">
-        <div class="card">
-          <img src="images/music.jpg" class="card-img-top" alt="Music Player" />
-          <div class="card-body">
+        <div class="card h-100">
+          <img src="images/music.jpg" class="card-img-top" alt="Windows Music/Video Player" />
+          <div class="card-body d-flex flex-column">
             <h5 class="card-title">Windows Music/Video Player</h5>
-            <p class="card-text">C#, SQL Server, .NET | Media player with 500+ tracks, playlist features, and <0.5s load time.</p>
-            <a href="https://github.com/Vinayak-Rajput/Windows-Music-Video-Player-Application" class="btn btn-outline-primary">View Project</a>
+            <p class="card-text">C#, SQL Server, .NET — Media player with 500+ tracks, playlist features, and &lt;0.5s load time.</p>
+            <div class="mt-auto">
+              <a href="https://github.com/Vinayak-Rajput/Windows-Music-Video-Player-Application" class="btn btn-outline-primary" target="_blank" rel="noopener">View Project</a>
+            </div>
           </div>
         </div>
       </div>
       <div class="col-md-6 mb-4">
-        <div class="card">
-          <img src="images/deepfake.jpg" class="card-img-top" alt="Deepfake Detection" />
-          <div class="card-body">
+        <div class="card h-100">
+          <img src="images/deepfake.jpg" class="card-img-top" alt="Deepfake Detection & Blockchain Logging" />
+          <div class="card-body d-flex flex-column">
             <h5 class="card-title">Deepfake Detection & Blockchain Logging</h5>
-            <p class="card-text">Python, TensorFlow, Flask, Ethereum | Hybrid CNN detection with tamper-proof blockchain logging.</p>
-            <a href="https://github.com/Vinayak-Rajput/DeepFake-Images-Videos-Detection-and-Authentication" class="btn btn-outline-primary">View Project</a>
+            <p class="card-text">Python, TensorFlow, Flask, Ethereum — Hybrid CNN detection with tamper-proof blockchain logging.</p>
+            <div class="mt-auto">
+              <a href="https://github.com/Vinayak-Rajput/DeepFake-Images-Videos-Detection-and-Authentication" class="btn btn-outline-primary" target="_blank" rel="noopener">View Project</a>
+            </div>
           </div>
         </div>
       </div>
@@ -150,25 +219,25 @@
   </div>
 </section>
 
-<!-- Certifications -->
-<section id="certifications" class="bg-light">
+<!-- Certifications Section -->
+<section id="certifications" class="bg-light py-5">
   <div class="container">
-    <h3>Certifications</h3>
-    <ul>
-      <li><a href="https://www.credly.com/badges/1f3441cb-2af9-4721-9d86-fba5266fbc7d/linked_in_profile" target="_blank">Juniper Security Associate (JNCIA-SEC) — 2025</a></li>
-      <li><a href="https://www.credly.com/badges/d42b0831-822d-435b-9c3a-03aa711a4949/linked_in_profile" target="_blank">Google Cloud Computing Foundations — 2025</a></li>
-      <li><a href="https://www.coursera.org/account/accomplishments/specialization/76RZFAJK29BD" target="_blank">Google Cybersecurity Specialization — 2024</a></li>
-      <li><a href="https://drive.google.com/file/d/1-WEudu-fp2Owj6DbZ0EI5I-85bAx6sd1/view?usp=drive_link" target="_blank">IBM AI Challenge Course — 2024</a></li>
-      <li><a href="https://nptel.ac.in/noc/E_Certificate/NPTEL24CS51S55230047630799600" target="_blank">NPTEL Introduction to Machine Learning — 2023</a></li>
+    <h3 class="text-center">Certifications</h3>
+    <ul class="mt-3">
+      <li><a href="https://www.credly.com/badges/1f3441cb-2af9-4721-9d86-fba5266fbc7d/linked_in_profile" target="_blank" rel="noopener">Juniper Security Associate (JNCIA-SEC) — 2025</a></li>
+      <li><a href="https://www.credly.com/badges/d42b0831-822d-435b-9c3a-03aa711a4949/linked_in_profile" target="_blank" rel="noopener">Google Cloud Computing Foundations — 2025</a></li>
+      <li><a href="https://www.coursera.org/account/accomplishments/specialization/76RZFAJK29BD" target="_blank" rel="noopener">Google Cybersecurity Specialization — 2024</a></li>
+      <li><a href="https://drive.google.com/file/d/1-WEudu-fp2Owj6DbZ0EI5I-85bAx6sd1/view?usp=drive_link" target="_blank" rel="noopener">IBM AI Challenge Course — 2024</a></li>
+      <li><a href="https://nptel.ac.in/noc/E_Certificate/NPTEL24CS51S55230047630799600" target="_blank" rel="noopener">NPTEL Introduction to Machine Learning — 2023</a></li>
     </ul>
   </div>
 </section>
 
-<!-- Achievements -->
-<section id="achievements">
+<!-- Achievements Section -->
+<section id="achievements" class="py-5">
   <div class="container">
-    <h3>Achievements</h3>
-    <ul>
+    <h3 class="text-center">Achievements</h3>
+    <ul class="mt-3">
       <li>Ranked in top 25% of B.E. Computer Science program.</li>
       <li>Delivered 4 production-ready applications with measurable performance gains.</li>
       <li>Completed industry certifications in AI, ML, Cloud, and Cybersecurity.</li>
@@ -176,14 +245,14 @@
   </div>
 </section>
 
-<!-- Contact -->
+<!-- Contact Section -->
 <section id="contact" class="bg-light py-5">
   <div class="container text-center">
     <h3>Contact Me</h3>
     <p>Email: <a href="mailto:vk.ra.org@gmail.com">vk.ra.org@gmail.com</a></p>
     <p>Phone: +91 9634314849</p>
-    <p>LinkedIn: <a href="https://www.linkedin.com/in/vinayak-rajput-625981252" target="_blank">Vinayak Rajput</a></p>
-    <p>GitHub: <a href="https://github.com/Vinayak-Rajput" target="_blank">github.com/Vinayak-Rajput</a></p>
+    <p>LinkedIn: <a href="https://www.linkedin.com/in/vinayak-rajput-625981252" target="_blank" rel="noopener">Vinayak Rajput</a></p>
+    <p>GitHub: <a href="https://github.com/Vinayak-Rajput" target="_blank" rel="noopener">github.com/Vinayak-Rajput</a></p>
   </div>
 </section>
 
@@ -193,5 +262,30 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script>
+  // Dark mode toggle
+  const toggleBtn = document.getElementById('themeToggle');
+  toggleBtn.addEventListener('click', () => {
+    if (document.documentElement.getAttribute('data-theme') === 'dark') {
+      document.documentElement.removeAttribute('data-theme');
+      toggleBtn.innerHTML = '<i class="bi bi-moon"></i>';
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      toggleBtn.innerHTML = '<i class="bi bi-sun"></i>';
+    }
+  });
+
+  // Scroll/fade-in animations
+  const sections = document.querySelectorAll('section');
+  const revealOnScroll = () => {
+    const triggerBottom = window.innerHeight * 0.85;
+    sections.forEach(section => {
+      const sectionTop = section.getBoundingClientRect().top;
+      if (sectionTop < triggerBottom) section.classList.add('visible');
+    });
+  };
+  window.addEventListener('scroll', revealOnScroll);
+  window.addEventListener('load', revealOnScroll);
+</script>
 </body>
 </html>
